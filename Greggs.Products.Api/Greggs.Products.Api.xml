@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Greggs.Products.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Greggs.Products.Api.Controllers.ProductController">
+            <summary>
+            Products API
+            </summary>
+        </member>
+        <member name="M:Greggs.Products.Api.Controllers.ProductController.#ctor(Microsoft.Extensions.Logging.ILogger{Greggs.Products.Api.Controllers.ProductController},Greggs.Products.Api.Interfaces.IDataAccess{Greggs.Products.Api.Models.Product},Greggs.Products.Api.Interfaces.ICurrencyConverter)">
+            <summary></summary>
+        </member>
+        <member name="M:Greggs.Products.Api.Controllers.ProductController.Get(System.Threading.CancellationToken,System.Int32,System.Int32,System.String)">
+            <summary>
+            Returns an array of products, optionally paging the results and adjusting the prices to another currency.
+            </summary>
+            <param name="token">Async cancellation token</param>
+            <param name="pageStart">Starting page number</param>
+            <param name="pageSize">Number of items per page</param>
+            <param name="currencySymbol">Pricing currency symbol specified in ISO4127 notation</param>
+            <returns></returns>
+        </member>
+        <member name="T:Greggs.Products.Api.Currency.CurrencyConverter">
+            <summary>
+            Implementation of a currency conversion library
+            </summary>
+        </member>
+        <member name="F:Greggs.Products.Api.Currency.CurrencyConverter._currencyCache">
+            <summary>
+            An instance of a cache for currency conversion rates
+            </summary>
+        </member>
+        <member name="M:Greggs.Products.Api.Currency.CurrencyConverter.#ctor(Greggs.Products.Api.Interfaces.ICurrencyCache)">
+            <summary>
+            Standard constructor, value will be injected via DI under normal usage.
+            </summary>
+            <param name="currencyCache">Implementation of the <see cref="T:Greggs.Products.Api.Interfaces.ICurrencyCache"/> interface</param>
+        </member>
+        <member name="M:Greggs.Products.Api.Currency.CurrencyConverter.ConvertTo(System.Decimal,Greggs.Products.Api.Currency.SupportedCurrency)">
+            <summary>
+            Converts a provided decimal value 
+            </summary>
+            <param name="priceInPounds">The current price in GBP</param>
+            <param name="targetCurrency">The currency to convert to</param>
+            <returns>The current price adjusted to the target currency</returns>
+        </member>
+        <member name="T:Greggs.Products.Api.Currency.SupportedCurrency">
+            <summary>
+            Contains all of the currency Symbols (in ISO4127 notation) that are currently supported
+            </summary>
+        </member>
+        <member name="T:Greggs.Products.Api.DataAccess.ProductAccess">
+            <summary>
+            DISCLAIMER: This is only here to help enable the purpose of this exercise, this doesn't reflect the way we work!
+            </summary>
+        </member>
+        <member name="M:Greggs.Products.Api.DataAccess.ProductAccess.ListAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+             <summary>
+             Async method to wrap the non-async List() call.
+            
+             In a real database scenario, we would want to pass in the cancellation token to ensure abandoned requests to the
+             API will abort requests to the database - reducing unwanted load on the database server
+             </summary>
+             <param name="pageStart">The oage number to start at</param>
+             <param name="pageSize">The number of products in a page</param>
+             <param name="token">Async Task cancellation token</param>
+             <returns>A paged subselection of the products in the database</returns>
+        </member>
+        <member name="M:Greggs.Products.Api.DataAccess.ProductAccess.List(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Returns a list of products from the dummy database list.
+            </summary>
+            <param name="pageStart">The oage number to start at</param>
+            <param name="pageSize">The number of products in a page</param>
+            <returns>A paged subselection of the products in the database</returns>
+        </member>
+        <member name="T:Greggs.Products.Api.DataAccess.StaticCurrencyCache">
+            <summary>
+            A static implementation of a <see cref="T:Greggs.Products.Api.Interfaces.ICurrencyCache"/> containing only GBP and EUR rates
+            </summary>
+        </member>
+        <member name="M:Greggs.Products.Api.DataAccess.StaticCurrencyCache.GetCurrencyRate(System.String)">
+            <summary>
+            Gets a rate from the cache specified by the ISO4127 notation currency symbol
+            </summary>
+            <param name="currencySymbol">A ISO4127 notation currency symbol</param>
+            <returns>The current exchange rate for the specified currency symbol</returns>
+        </member>
+        <member name="M:Greggs.Products.Api.DataAccess.StaticCurrencyCache.UpdateCurrencyRate(System.String,System.Decimal)">
+            <summary>
+            Updates a currency exchange rate value in the cache
+            </summary>
+            <param name="currencySymbol">A ISO4127 notation currency symbol</param>
+            <param name="newValue">The new exchange rate</param>
+            <returns>True if successfully updated</returns>
+        </member>
+        <member name="T:Greggs.Products.Api.Interfaces.ICurrencyCache">
+            <summary>
+            Provides a method of retrieving and manipulating currency rates
+            </summary>
+        </member>
+        <member name="M:Greggs.Products.Api.Interfaces.ICurrencyCache.GetCurrencyRate(System.String)">
+            <summary>
+            Gets a rate from the cache specified by the ISO4127 notation currency symbol
+            </summary>
+            <param name="currencySymbol">A ISO4127 notation currency symbol</param>
+            <returns>The current exchange rate for the specified currency symbol</returns>
+        </member>
+        <member name="M:Greggs.Products.Api.Interfaces.ICurrencyCache.UpdateCurrencyRate(System.String,System.Decimal)">
+            <summary>
+            Updates a currency exchange rate value in the cache
+            </summary>
+            <param name="currencySymbol">A ISO4127 notation currency symbol</param>
+            <param name="newValue">The new exchange rate</param>
+            <returns>True if successfully updated</returns>
+        </member>
+        <member name="T:Greggs.Products.Api.Interfaces.ICurrencyConverter">
+            <summary>
+            Currency conversion abstraction
+            </summary>
+        </member>
+        <member name="M:Greggs.Products.Api.Interfaces.ICurrencyConverter.ConvertTo(System.Decimal,Greggs.Products.Api.Currency.SupportedCurrency)">
+            <summary>
+            Converts a provided decimal value 
+            </summary>
+            <param name="priceInPounds">The current price in GBP</param>
+            <param name="targetCurrency">The currency to convert to</param>
+            <returns>The current price adjusted to the target currency</returns>
+        </member>
+    </members>
+</doc>
