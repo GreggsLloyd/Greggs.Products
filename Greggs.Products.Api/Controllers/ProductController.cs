@@ -28,7 +28,7 @@ namespace Greggs.Products.Api.Controllers
         {
             if (pageSize > Products.Length)
                 pageSize = Products.Length;
-            
+
             var rng = new Random();
             return Enumerable.Range(1, pageSize).Select(index => new Product
             {
@@ -36,6 +36,31 @@ namespace Greggs.Products.Api.Controllers
                 Name = Products[rng.Next(Products.Length)]
             })
             .ToArray();
+        }
+
+        /// <summary>
+        /// Get the latest products and also show price in Euros. 
+        /// This can be called by both a Greggs Fanatic and Greggs Entrepreneur. 
+        /// TODO: Could seperate out calls to different end point service methods to return different models.
+        /// </summary>
+        /// <param name="pageStart"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("latest")]
+        public IEnumerable<LatestProduct> GetLatest(int pageStart = 0, int pageSize = 5)
+        {
+            if (pageSize > Products.Length)
+                pageSize = Products.Length;
+            
+            var rng = new Random();
+            return Enumerable.Range(1, pageSize).Select(index => new LatestProduct
+            {
+                PriceInPounds = rng.Next(0, 10),
+                Name = Products[rng.Next(Products.Length)]
+            })
+            .ToArray()
+            .OrderByDescending(x => x.DateAdded); // List by latest date product was added. 
         }
     }
 }
