@@ -14,7 +14,7 @@ namespace Greggs.Products.Api.DataAccess
         private readonly Dictionary<string, decimal> _staticRateDictionary = new Dictionary<string, decimal>()
         {
             {"GBP", 1.0m},
-            {"EUR", 1.1m}
+            {"EUR", 1.11m}
         };
 
         /// <summary>

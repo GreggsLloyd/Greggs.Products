@@ -39,7 +39,7 @@ namespace Greggs.Products.UnitTests
             decimal priceInPounds = 1.0m;
             decimal convertedRate = _currencyConverter.ConvertTo(priceInPounds, SupportedCurrency.EUR);
 
-            Assert.Equal((priceInPounds * 1.1m), convertedRate);
+            Assert.Equal((priceInPounds * 1.11m), convertedRate);
         }
 
     }
