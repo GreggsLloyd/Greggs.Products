@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Greggs.Products.Api.Models;
+using Greggs.Products.Api.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -17,10 +20,12 @@ namespace Greggs.Products.Api.Controllers
         };
 
         private readonly ILogger<ProductController> _logger;
+        private readonly IProductRepository _productRepository;
 
-        public ProductController(ILogger<ProductController> logger)
+        public ProductController(ILogger<ProductController> logger, IProductRepository productRepository)
         {
             _logger = logger;
+            _productRepository = productRepository;
         }
 
         [HttpGet]
@@ -48,19 +53,29 @@ namespace Greggs.Products.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("latest")]
-        public IEnumerable<LatestProduct> GetLatest(int pageStart = 0, int pageSize = 5)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetLatest(int pageStart = 0, int pageSize = 5)
         {
-            if (pageSize > Products.Length)
-                pageSize = Products.Length;
-            
-            var rng = new Random();
-            return Enumerable.Range(1, pageSize).Select(index => new LatestProduct
+            if (pageStart < 0)
             {
-                PriceInPounds = rng.Next(0, 10),
-                Name = Products[rng.Next(Products.Length)]
-            })
-            .ToArray()
-            .OrderByDescending(x => x.DateAdded); // List by latest date product was added. 
+                return BadRequest($"{nameof(pageStart)} is out of range, please specify a valid value.");
+            }
+
+            if (pageSize == 0 || pageSize < 0)
+            {
+                return BadRequest($"{nameof(pageSize)} is out of range, please specify a valid value.");
+            }
+
+            var model = await _productRepository.List(pageStart, pageSize);
+
+            if (model == null || !model.Any())
+            {
+                return NotFound("No data was found!");
+            }
+
+            return Ok(model);
         }
     }
 }

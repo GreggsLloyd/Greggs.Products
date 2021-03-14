@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Greggs.Products.Api.DataAccess;
+using Greggs.Products.Api.Models;
+using Greggs.Products.Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +30,9 @@ namespace Greggs.Products.Api
             services.AddControllers();
 
             services.AddSwaggerGen();
+
+            services.AddScoped<IDataAccess<Product>, ProductAccess>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
